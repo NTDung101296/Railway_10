@@ -7,17 +7,17 @@ CREATE TABLE IF NOT EXISTS Department(
 ##auto increment la cai dat chu so tu dong tang
 DepartmentID INT PRIMARY KEY AUTO_INCREMENT,
 ## day la phong ban kieu du lieu varchar
-DepartmentName VARCHAR(50)
+DepartmentName VARCHAR(200)
 );
 ##Table 2: Position
 CREATE TABLE IF NOT EXISTS `Position`(
     PositionID INT PRIMARY KEY AUTO_INCREMENT,
-    PositionName VARCHAR(50)
+    PositionName VARCHAR(150)
 );
 ##Table 3: Account
 CREATE TABLE IF NOT EXISTS `Account`(
 AccountID INT PRIMARY KEY AUTO_INCREMENT,
-Email VARCHAR(50),
+Email VARCHAR(100),
 Username VARCHAR(50),
 Fullname VARCHAR(50),
 DepartmentID INT,
@@ -40,12 +40,12 @@ JoinDate DATE
 ##Table 6: TypeQuestion
 CREATE TABLE IF NOT EXISTS TypeQuestion(
 TypeID INT PRIMARY KEY AUTO_INCREMENT,
-TypeName ENUM('Essay','Multiple-Choice')
+TypeName VARCHAR(50)
 );
 ##Table 7: CategoryQuestion
 CREATE TABLE IF NOT EXISTS CategoryQuestion(
 CategoryID INT PRIMARY KEY AUTO_INCREMENT,
-CategoryName ENUM('Java','.NET','SQL','Postman','Ruby','...')
+CategoryName VARCHAR(100)
 );
 ##Table 8: Question
 CREATE TABLE IF NOT EXISTS Question(
