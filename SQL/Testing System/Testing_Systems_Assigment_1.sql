@@ -1,4 +1,4 @@
-##tao Database
+##Tao Database
 CREATE DATABASE IF NOT EXISTS Testing_System_Assigment1;
 USE Testing_System_Assigment1;
 ##IF NOT EXISTS la tranh loi khi tao bang da ton tai
