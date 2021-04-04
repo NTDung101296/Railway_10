@@ -145,20 +145,22 @@ VALUES
 
 INSERT INTO `Account`(AccountID,Email,Username,FullName,DepartmentID,PositionID,CreateDate)
 VALUES
-      (1,'nguyen-trung.dung@vmec.vn','Dung','Nguyen Trung Dung',1,1,2018/10/01),
-      (2,'hoang-kieu.chinh@vmec.vn','Chinh','Hoang Kieu Chinh',1,2,2016/09/05),
-      (3,'doan-truong.long@vmec.vn','Long','Doan Truong Long',2,4,2010/03/01),
-      (4,'nguyen-thanh.huong@vmec.vn','Huong','Nguyen Thi Thanh Huong',3,5,2015/06/28),
-      (5,'nguyen-thi.la@vmec.vn','La','Nguyen Thi La',5,5,2008/04/08);
+      (1,'nguyen-trung.dung@vmec.vn','Dung','Nguyen Trung Dung',1,1,'2018/10/01'),
+      (2,'hoang-kieu.chinh@vmec.vn','Chinh','Hoang Kieu Chinh',1,2,'2016/09/05'),
+      (3,'doan-truong.long@vmec.vn','Long','Doan Truong Long',2,4,'2010/03/01'),
+      (4,'nguyen-thanh.huong@vmec.vn','Huong','Nguyen Thi Thanh Huong',3,5,'2015/06/28'),
+      (5,'nguyen-thi.la@vmec.vn','La','Nguyen Thi La',5,5,'2008/04/08');
      
 -- Add data Group
 INSERT INTO `Group`(GroupID,GroupName,CreatorID,CreateDate)
 VALUES
-      (1,'MS2',101296,2020/10/01),
-      (2,'MF2',281296,2019/09/05),
-      (3,'QC',280696,2013/03/01),
-      (4,'SE2',151194,2018/11/28),
-      (5,'ID2',140290,2017/04/08);
+      (1,'MS2',101296,'2020/10/01'),
+      (2,'MF2',281296,'2019/09/05'),
+      (3,'QC',280696,'2013/03/01'),
+      (4,'SE2',151194,'2018/11/28'),
+      (5,'ID2',140290,'2017/04/08');
+
+
 
       
 
