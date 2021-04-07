@@ -392,6 +392,6 @@ WHERE AccountID = 5;
 
 ##Question 15: Uppdate account có id=5 sẽ thuộc group có id =4
 UPDATE GroupAccount
-SET AccountID = 5
-WHERE GroupID = 4;
+SET GroupID = 4
+WHERE AccountID = 5;
     
