@@ -391,7 +391,7 @@ SET Fullname = 'Nguyễn Bá Lộc',
 WHERE AccountID = 5;
 
 ##Question 15: Uppdate account có id=5 sẽ thuộc group có id =4
-UPDATE `Group`
-SET CreatorID = 5 ##CreatorID là khoá ngoại tham chiếu đến AccountID của bảng Account
+UPDATE GroupAccount
+SET AccountID = 5
 WHERE GroupID = 4;
     
