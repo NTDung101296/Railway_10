@@ -1,34 +1,18 @@
 package com.vti.backend;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.vti.utils.JdbcUtils;
+
 public class Exercise4 {
 	private Connection connection;
-
-	public Connection connect() throws ClassNotFoundException, SQLException {
-		String url = "jdbc:mysql://localhost:3306/testing_system?autoReconnect=true&useSSL=false&characterEncoding=latin1";
-		String username = "root";
-		String password = "2021P@ss";
-
-		Class.forName("com.mysql.cj.jdbc.Driver");
-
-		// Get a database connection
-		connection = DriverManager.getConnection(url, username, password);
-		System.out.println("Connect success!");
-
-		return connection;
-	}
-
-	public void disconnect() throws SQLException {
-		connection.close();
-	}
+	private JdbcUtils jdbcUtils;
 	
 	public void deleteDepartmentById(int id) throws ClassNotFoundException, SQLException {
 		//get connection
-		connect();
+		jdbcUtils.connect();
 		
 		//turn off auto commit
 		connection.setAutoCommit(false);
@@ -69,6 +53,6 @@ public class Exercise4 {
 		connection.setAutoCommit(true);
 		
 		//close connection
-		disconnect();
+		jdbcUtils.disconnect();
 	}
 }

@@ -3,7 +3,7 @@ package com.vti.entity;
 import java.util.Date;
 
 public class Account {
-	private int id;
+	private short id;
 	private String email;
 	private String userName;
 	private String fullName;
@@ -17,11 +17,11 @@ public class Account {
 				+ ", department=" + department + ", position=" + position + ", createDate=" + createDate + "]";
 	}
 
-	public int getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
@@ -73,7 +73,7 @@ public class Account {
 		this.createDate = createDate;
 	}
 
-	public Account(int id, String email, String userName, String fullName, Department department, Position position,
+	public Account(short id, String email, String userName, String fullName, Department department, Position position,
 			Date createDate) {
 		super();
 		this.id = id;

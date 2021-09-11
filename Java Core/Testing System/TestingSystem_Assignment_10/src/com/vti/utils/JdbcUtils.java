@@ -3,6 +3,7 @@ package com.vti.utils;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -67,6 +68,11 @@ public class JdbcUtils {
 	public PreparedStatement createPrepareStatement(String sql) throws ClassNotFoundException, SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(sql);
 		return preparedStatement;
+	}
+
+	public CallableStatement createCallableStatement(String sql) throws SQLException {
+		CallableStatement callableStatement = connection.prepareCall(sql);
+		return callableStatement;
 	}
 
 }

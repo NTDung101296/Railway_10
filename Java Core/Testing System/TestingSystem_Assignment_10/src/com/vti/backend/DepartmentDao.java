@@ -1,195 +1,160 @@
 package com.vti.backend;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
 
 import com.vti.entity.Department;
+import com.vti.utils.JdbcUtils;
 
 public class DepartmentDao {
 	private List<Department> departments;
-	private Scanner scanner;
-	private Connection connection;
-	private Statement statement;
+	private JdbcUtils jdbcUtils;
 	private ResultSet resultSet;
 	private PreparedStatement preparedStatement;
 
-	public DepartmentDao() {
+	public DepartmentDao() throws ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 		departments = new ArrayList<Department>();
-		scanner = new Scanner(System.in);
-	}
-
-	public Connection connect() throws ClassNotFoundException, SQLException {
-		String url = "jdbc:mysql://localhost:3306/employees?autoReconnect=true&useSSL=false&characterEncoding=latin1";
-		String username = "root";
-		String password = "2021P@ss";
-
-		Class.forName("com.mysql.cj.jdbc.Driver");
-
-		// Get a database connection
-		connection = DriverManager.getConnection(url, username, password);
-		System.out.println("Connect success!");
-
-		return connection;
-	}
-
-	public void disconnect() throws SQLException {
-		connection.close();
+		jdbcUtils = new JdbcUtils();
 	}
 
 	public List<Department> getDepartments() throws ClassNotFoundException, SQLException {
 		// Get a database connection
-		connect();
-
-		// Create a statement object
-		statement = connection.createStatement();
+		jdbcUtils.connect();
 
 		// Execute SQL query
-		String sql = "SELECT * FROM departments";
-		resultSet = statement.executeQuery(sql);
+		String sql = "SELECT * FROM department";
+		resultSet = jdbcUtils.executeQuery(sql);
 
 		Department department;
 		// Handing result set
 		while (resultSet.next() == true) {
-			department = new Department(resultSet.getString("dept_no"), resultSet.getString("dept_name"));
+			department = new Department(resultSet.getByte("department_id"), resultSet.getString("department_name"));
 			departments.add(department);
 		}
 
 		// Close connection
-		disconnect();
+		jdbcUtils.disconnect();
 
 		return departments;
 	}
 
-	public Department getDepartmentByID(String id) throws ClassNotFoundException, SQLException {
+	public Department getDepartmentByID(byte id) throws ClassNotFoundException, SQLException {
 		// Get a database connection
-		connect();
+		jdbcUtils.connect();
 
 		// Create a statement object
-		String sql = "SELECT * FROM departments WHERE dept_no = ?";
-		preparedStatement = connection.prepareStatement(sql);
-
-		// Input using scanner, sd o frontend
-		System.out.println("Moi ban nhap vap ma phong ban: ");
-		id = scanner.nextLine();
+		String sql = "SELECT * FROM department WHERE department_id = ?";
+		preparedStatement = jdbcUtils.createPrepareStatement(sql);
 
 		// Set parameter
-		preparedStatement.setString(1, id);
+		preparedStatement.setByte(1, id);
 
 		resultSet = preparedStatement.executeQuery();
 		Department department;
 
 		// Handing result set
 		if (resultSet.next() == true) {
-			department = new Department(resultSet.getString("dept_no"), resultSet.getString("dept_name"));
+			department = new Department(resultSet.getByte("department_id"), resultSet.getString("department_name"));
 			return department;
 		} else {
 			System.out.println("Cannot find department which has id= " + id);
-			disconnect();
+			jdbcUtils.disconnect();
 			return null;
 		}
 	}
 
 	public boolean isDepartmentNameExists(String name) throws ClassNotFoundException, SQLException {
-		connect();
+		jdbcUtils.connect();
 
-		String sql = "SELECT * FROM departments WHERE dept_name = ?";
-		preparedStatement = connection.prepareStatement(sql);
+		String sql = "SELECT * FROM department WHERE department_name = ?";
+		preparedStatement = jdbcUtils.createPrepareStatement(sql);
 		preparedStatement.setString(1, name);
 		resultSet = preparedStatement.executeQuery();
 
 		if (resultSet.next() == true) {
-			disconnect();
+			jdbcUtils.disconnect();
 			return true;
 		} else {
-			disconnect();
+			jdbcUtils.disconnect();
 			return false;
 		}
 	}
 
-	public boolean isDepartmentIdExists(String id) throws ClassNotFoundException, SQLException {
-		connect();
+	public boolean isDepartmentIdExists(byte id) throws ClassNotFoundException, SQLException {
+		jdbcUtils.connect();
 
-		String sql = "SELECT * FROM departments WHERE dept_no = ?";
-		preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.setString(1, id);
+		String sql = "SELECT * FROM department WHERE department_id = ?";
+		preparedStatement = jdbcUtils.createPrepareStatement(sql);
+		preparedStatement.setByte(1, id);
 		resultSet = preparedStatement.executeQuery();
 
 		if (resultSet.next() == true) {
-			disconnect();
+			jdbcUtils.disconnect();
 			return true;
 		} else {
-			disconnect();
+			jdbcUtils.disconnect();
 			return false;
 		}
 	}
 
-	public void createDepartment(String id, String name) throws ClassNotFoundException, SQLException, Exception {
-		connect();
+	public void createDepartment(String name) throws ClassNotFoundException, SQLException, Exception {
+		jdbcUtils.connect();
 
 		if (isDepartmentNameExists(name) == true) {
 			throw new Exception("Department Name is Exists!");
 		} else {
-			String sql = "INSERT INTO departments()\n" + "VALUE (? , ?)";
-			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, id);
-			preparedStatement.setString(2, name);
+			String sql = "INSERT INTO department(department_name)\n" + "VALUE (?)";
+			preparedStatement = jdbcUtils.createPrepareStatement(sql);
+			preparedStatement.setString(1, name);
 			int effectedRecords = preparedStatement.executeUpdate();
 			if (effectedRecords > 0) {
 				System.out.println("Create " + effectedRecords + " Department complete");
 			}
 		}
-		disconnect();
 	}
 
-	public void updateDepartmentName(String id, String newName) throws ClassNotFoundException, SQLException, Exception {
-		connect();
+	public void updateDepartmentName(byte id, String newName) throws ClassNotFoundException, SQLException, Exception {
+		jdbcUtils.connect();
 
 		if (isDepartmentIdExists(id) == false) {// !isDepartmentIdExists(id)
 			throw new Exception("Cannot find department which has id= " + id);
 		} else if (isDepartmentNameExists(newName) == true) {
 			throw new Exception("Department Name is Exists!");
 		} else {
-			String sql = "UPDATE departments\n" + "SET dept_name = ?\n" + "WHERE dept_no = ?";
-			preparedStatement = connection.prepareStatement(sql);
+			String sql = "UPDATE department\n" + "SET department_name = ?\n" + "WHERE department_id = ?";
+			preparedStatement = jdbcUtils.createPrepareStatement(sql);
 			preparedStatement.setString(1, newName);
-			preparedStatement.setString(2, id);
+			preparedStatement.setByte(2, id);
 			int effectedRecords = preparedStatement.executeUpdate();
 			if (effectedRecords > 0) {
 				System.out.println("Update " + effectedRecords + " Department success");
 			}
 		}
-		disconnect();
+		jdbcUtils.disconnect();
 	}
-	
-	public void deleteDepartment(String id) throws ClassNotFoundException, SQLException, Exception {
-		connect();
+
+	public void deleteDepartment(byte id) throws ClassNotFoundException, SQLException, Exception {
+		jdbcUtils.connect();
 
 		if (isDepartmentIdExists(id) == false) {// !isDepartmentIdExists(id)
 			throw new Exception("Cannot find department which has id= " + id);
 		} else {
-			String sql = "DELETE FROM departments\n" + "WHERE dept_no = ?";
-			preparedStatement = connection.prepareStatement(sql);
-			
-			// Input using scanner, sd o frontend
-			System.out.println("Moi ban nhap vao ma phong ban: ");
-			id = scanner.nextLine();
-			
-			preparedStatement.setString(1, id);
+			String sql = "DELETE FROM department\n" + "WHERE department_id = ?";
+			preparedStatement = jdbcUtils.createPrepareStatement(sql);
+
+			preparedStatement.setByte(1, id);
 			int effectedRecords = preparedStatement.executeUpdate();
-			
+
 			if (effectedRecords > 0) {
 				System.out.println("Delete " + effectedRecords + " Department complete");
 			}
 		}
-		disconnect();
+		jdbcUtils.disconnect();
 	}
 
 }

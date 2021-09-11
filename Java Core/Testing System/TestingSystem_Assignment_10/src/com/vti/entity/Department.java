@@ -1,10 +1,10 @@
 package com.vti.entity;
 
 public class Department {
-	private String id;
+	private byte id;
 	private String name;
 	
-	public Department(String id, String name) {
+	public Department(byte id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -19,11 +19,11 @@ public class Department {
 		return "Department [id=" + id + ", name=" + name + "]";
 	}
 
-	public String getId() {
+	public byte getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(byte id) {
 		this.id = id;
 	}
 

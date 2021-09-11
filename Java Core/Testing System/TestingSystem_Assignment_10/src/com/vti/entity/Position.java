@@ -1,22 +1,22 @@
 package com.vti.entity;
 
 public class Position {
-	private int id;
+	private byte id;
 	private PositionName name;
 	
 	
 
-	public Position(int id, PositionName name) {
+	public Position(byte id, PositionName name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 
-	public int getId() {
+	public byte getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(byte id) {
 		this.id = id;
 	}
 
