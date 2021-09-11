@@ -73,6 +73,9 @@ public class Account {
 		this.createDate = createDate;
 	}
 
+	public Account() {
+	}
+
 	public Account(short id, String email, String userName, String fullName, Department department, Position position,
 			Date createDate) {
 		super();
@@ -83,6 +86,11 @@ public class Account {
 		this.department = department;
 		this.position = position;
 		this.createDate = createDate;
+	}
+
+	public Account(Position position) {
+		super();
+		this.position = position;
 	}
 
 }

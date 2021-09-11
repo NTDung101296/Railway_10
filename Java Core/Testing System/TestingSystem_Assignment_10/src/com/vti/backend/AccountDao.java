@@ -19,7 +19,7 @@ public class AccountDao {
 	private JdbcUtils jdbcUtils;
 	private ResultSet resultSet;
 	private PreparedStatement preparedStatement;
-	private Account account;
+//	private Account account;
 
 	public AccountDao() throws FileNotFoundException, ClassNotFoundException, IOException, SQLException {
 		accounts = new ArrayList<Account>();
@@ -31,17 +31,16 @@ public class AccountDao {
 		jdbcUtils.connect();
 
 		// Execute SQL query
-		String sql = "SELECT * FROM `account`";
+		String sql = "SELECT * FROM account";
 		resultSet = jdbcUtils.executeQuery(sql);
-
 		// Handing result set
 		while (resultSet.next() == true) {
-			Department department = getDepartmentByID(resultSet.getByte("department_id"));
 			Position position = getPositionByID(resultSet.getByte("position_id"));
+			Department department = getDepartmentByID(resultSet.getByte("department_id"));
 
-			account = new Account(resultSet.getShort("account_id"), resultSet.getString("email"),
-					resultSet.getString("user_name"), resultSet.getString("full_name"), department, position,
-					resultSet.getDate("create_date"));
+			Account account = new Account(resultSet.getShort("account_id"), resultSet.getString("email"),
+					resultSet.getString("user_name"), resultSet.getString("full_name"),
+					department, position, resultSet.getDate("create_date"));
 			accounts.add(account);
 		}
 
@@ -62,7 +61,6 @@ public class AccountDao {
 		preparedStatement.setByte(1, id);
 
 		resultSet = preparedStatement.executeQuery();
-
 		// Handing result set
 		if (resultSet.next() == true) {
 			Department department = new Department(resultSet.getByte("department_id"),
@@ -79,7 +77,7 @@ public class AccountDao {
 		// Get a database connection
 		jdbcUtils.connect();
 		// Create a statement object
-		String sql = "SELECT * FROM `position` WHERE position_id = ?";
+		String sql = "SELECT * FROM position WHERE position_id =?";
 		preparedStatement = jdbcUtils.createPrepareStatement(sql);
 
 		// Set parameter
@@ -117,7 +115,7 @@ public class AccountDao {
 			Department department = getDepartmentByID(resultSet.getByte("department_id"));
 			Position position = getPositionByID(resultSet.getByte("position_id"));
 
-			account = new Account(resultSet.getShort("account_id"), resultSet.getString("email"),
+			Account account = new Account(resultSet.getShort("account_id"), resultSet.getString("email"),
 					resultSet.getString("user_name"), resultSet.getString("full_name"), department, position,
 					resultSet.getDate("create_date"));
 			return account;

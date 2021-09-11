@@ -51,17 +51,20 @@ public class Exercise1 {
 		String sql = "INSERT INTO `position` (position_name) VALUES (?);";
 		preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setString(1, positionName);
-		preparedStatement.executeUpdate();
-
-		System.out.println("Insert success");
+		int effectedRecords = preparedStatement.executeUpdate();
+		if (effectedRecords > 0) {
+			System.out.println("Insert" + effectedRecords + "ban ghi thanh cong.");
+		}
 	}
 
 	public void question4() throws SQLException {
 
 		String sql = "UPDATE position SET position_name = 'De' WHERE position_id = 5;";
 		preparedStatement = connection.prepareStatement(sql);
-		preparedStatement.executeUpdate();
-		System.out.println("Update success");
+		int effectedRecords = preparedStatement.executeUpdate();
+		if (effectedRecords > 0) {
+			System.out.println("Update" + effectedRecords + "ban ghi thanh cong.");
+		}
 	}
 
 	public void question5() throws SQLException {
@@ -71,8 +74,10 @@ public class Exercise1 {
 		String sql = "DELETE FROM `position` WHERE position_id = ?;";
 		preparedStatement = connection.prepareStatement(sql);
 		preparedStatement.setByte(1, id);
-		preparedStatement.executeUpdate();
-		System.out.println("Delete success");
+		int effectedRecords = preparedStatement.executeUpdate();
+		if (effectedRecords > 0) {
+			System.out.println("Delete" + effectedRecords + "ban ghi thanh cong.");
+		}
 	}
 
 }

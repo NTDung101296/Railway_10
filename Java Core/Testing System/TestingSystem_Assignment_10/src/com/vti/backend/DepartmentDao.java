@@ -30,10 +30,9 @@ public class DepartmentDao {
 		String sql = "SELECT * FROM department";
 		resultSet = jdbcUtils.executeQuery(sql);
 
-		Department department;
 		// Handing result set
 		while (resultSet.next() == true) {
-			department = new Department(resultSet.getByte("department_id"), resultSet.getString("department_name"));
+			Department department = new Department(resultSet.getByte("department_id"), resultSet.getString("department_name"));
 			departments.add(department);
 		}
 
@@ -103,11 +102,11 @@ public class DepartmentDao {
 	}
 
 	public void createDepartment(String name) throws ClassNotFoundException, SQLException, Exception {
-		jdbcUtils.connect();
 
 		if (isDepartmentNameExists(name) == true) {
 			throw new Exception("Department Name is Exists!");
 		} else {
+			jdbcUtils.connect();
 			String sql = "INSERT INTO department(department_name)\n" + "VALUE (?)";
 			preparedStatement = jdbcUtils.createPrepareStatement(sql);
 			preparedStatement.setString(1, name);
@@ -119,13 +118,13 @@ public class DepartmentDao {
 	}
 
 	public void updateDepartmentName(byte id, String newName) throws ClassNotFoundException, SQLException, Exception {
-		jdbcUtils.connect();
-
+		
 		if (isDepartmentIdExists(id) == false) {// !isDepartmentIdExists(id)
 			throw new Exception("Cannot find department which has id= " + id);
 		} else if (isDepartmentNameExists(newName) == true) {
 			throw new Exception("Department Name is Exists!");
 		} else {
+			jdbcUtils.connect();
 			String sql = "UPDATE department\n" + "SET department_name = ?\n" + "WHERE department_id = ?";
 			preparedStatement = jdbcUtils.createPrepareStatement(sql);
 			preparedStatement.setString(1, newName);
@@ -139,11 +138,11 @@ public class DepartmentDao {
 	}
 
 	public void deleteDepartment(byte id) throws ClassNotFoundException, SQLException, Exception {
-		jdbcUtils.connect();
 
 		if (isDepartmentIdExists(id) == false) {// !isDepartmentIdExists(id)
 			throw new Exception("Cannot find department which has id= " + id);
 		} else {
+			jdbcUtils.connect();
 			String sql = "DELETE FROM department\n" + "WHERE department_id = ?";
 			preparedStatement = jdbcUtils.createPrepareStatement(sql);
 

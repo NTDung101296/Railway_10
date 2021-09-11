@@ -14,8 +14,8 @@ public class Program2 {
 		DepartmentDao departmentDao = new DepartmentDao();
 
 		// Question 1: Lay ra danh sach tat ca cac department
-		System.out.println("Thong tin tat ca cac phong ban");
 		System.out.println(departmentDao.getDepartments());
+		System.out.println("Thong tin tat ca cac phong ban");
 
 		// Question 2-3: Lay ra department co id = ?
 		System.out.println("Nhap vao id phong ban can lay thong tin: ");
@@ -44,7 +44,7 @@ public class Program2 {
 		System.out.println("Nhap vao id: ");
 		byte id2 = scanner.nextByte();
 		scanner.nextLine();
-		System.out.println("Nhap vao name moi:");
+		System.out.println("Nhap vao ten phong ban moi:");
 		String newName = scanner.nextLine();
 		departmentDao.updateDepartmentName(id2, newName);
 		System.out.println(departmentDao.getDepartments());
@@ -58,6 +58,7 @@ public class Program2 {
 		// Question 8: Account
 		AccountDao accountDao = new AccountDao();
 		System.out.println(accountDao.getAccounts());
+//	System.out.println(accountDao.getPositionByID((byte) 1));
 //		accountDao.getAccountById(id3);
 //		accountDao.isAccountNameExists(name1);
 //		accountDao.createAccount(null, id2, id3);
