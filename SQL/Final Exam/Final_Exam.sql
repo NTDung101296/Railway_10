@@ -130,6 +130,32 @@ END$$
 FOR EACH 
 DELIMITER ;
 
+-- DROP TRIGGER IF EXISTS getquestion3;
+-- DELIMITER $$
+-- CREATE TRIGGER getquestion3
+-- BEFORE INSERT ON Employee
+-- FOR EACH ROW
+-- BEGIN
+-- DECLARE Nhan_vien TINYINT   ;
+-- DECLARE So_Quoc_Gia TINYINT ;
+
+-- SELECT  L.Country_ID INTO So_Quoc_Gia
+-- FROM   Location L 
+-- WHERE L.Location_ID = NEW.Location_ID ;
+
+-- SELECT COUNT(E.Location_ID) INTO Nhan_vien 
+-- FROM   Employee E
+-- JOIN Location L ON L.Location_ID = E.Location_ID 
+-- GROUP BY L.Country_ID 
+-- HAVING L.Country_ID = So_Quoc_Gia ;
+
+-- IF Nhan_vien > 10 THEN
+-- SIGNAL SQLSTATE '12345'
+-- SET MESSAGE_TEXT = 'Ko the add them Employee';
+-- END IF ;
+-- END$$
+-- DELIMITER ;
+
 -- Thử insert
 INSERT INTO Employee(full_name,email,location_id)
 VALUES
