@@ -1,48 +1,50 @@
-DROP DATABASE IF EXISTS Final_Exam_1;
-CREATE DATABASE Final_Exam_1;
-USE Final_Exam_1;
+DROP DATABASE IF EXISTS SQL1;
+CREATE DATABASE IF NOT EXISTS SQL1;
+USE SQL1;
 
 -- Questions
 -- 1. Tạo table với các ràng buộc và kiểu dữ liệu
 -- Thêm ít nhất 3 bản ghi vào table 
-
-CREATE TABLE IF NOT EXISTS Student (
-    StudentID TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    StudentName VARCHAR(50) NOT NULL,
-    StudentAge INT UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS Student;
+CREATE TABLE IF NOT EXISTS Student(
+    StudentID     TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    StudentName   VARCHAR(50) NOT NULL,
+    StudentAge    INT UNSIGNED NOT NULL,
     StudentGender ENUM('0', '1', 'NULL')
 );
 
-insert into Student(StudentName	,StudentAge, StudentGender)
-values				('BINH AN'	,	18		,	'0'),
-					('HOA BINH'	,	25		,	'1'),
-                    ('TRUNG DUNG',	32		,	'NULL');
+INSERT INTO Student(StudentName	,StudentAge, StudentGender)
+VALUES		   ('BINH AN'	,	18		,	'0'),
+	           ('HOA BINH'	,	25		,	'1'),
+                   ('TRUNG DUNG',	32		,	'NULL');
                     
-CREATE TABLE IF NOT EXISTS `Subject` (
-    SubjectID TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+DROP TABLE IF EXISTS `Subject`;
+CREATE TABLE IF NOT EXISTS `Subject`(
+    SubjectID   TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     SubjectName VARCHAR(50) NOT NULL
 );
 
-insert into `Subject`	(SubjectName)
-values					('TOAN'),
-						('LY'),
-						('HOA');
-		
-CREATE TABLE IF NOT EXISTS StudentSubject (
-    StudentID TINYINT UNSIGNED,
-    SubjectID TINYINT UNSIGNED,
-    Mark TINYINT UNSIGNED,
-    `Date` DATETIME DEFAULT NOW(),
-    PRIMARY KEY ( StudentID, SubjectID),
-FOREIGN KEY (StudentID) REFERENCES Student (StudentID),
-    FOREIGN KEY (SubjectID) REFERENCES `Subject` (SubjectID)
+INSERT INTO `Subject`(SubjectName)
+VALUES		     ('TOAN'),
+	             ('LY'),
+		     ('HOA');
+
+DROP TABLE IF EXISTS StudentSubject;
+CREATE TABLE IF NOT EXISTS StudentSubject(
+    StudentID   TINYINT UNSIGNED NOT NULL,
+    SubjectID   TINYINT UNSIGNED NOT NULL,
+    Mark        TINYINT UNSIGNED,
+    `Date`      DATETIME DEFAULT NOW(),
+    PRIMARY KEY (StudentID, SubjectID),
+    FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
+    FOREIGN KEY (SubjectID) REFERENCES `Subject`(SubjectID)
 );
 
-insert into StudentSubject	(StudentID	,SubjectID	,Mark	)
-values						(		1	,	2		,	10	),	
-							(		2	,	2		,	9	),	
-                            (		3	,	3		,	8),
-                            (		3	,	2		,	8);
+INSERT INTO StudentSubject(StudentID	,	SubjectID	,	Mark	)
+VALUES			  (1		,	2		,	10	),	
+			  (2		,	2		,	9	),	
+                          (3		,	3		,	8	),
+                          (3		,	2		,	8	);
                             
                             
 -- 2. Viết lệnh để
@@ -53,8 +55,7 @@ FROM
     `Subject` su
         LEFT JOIN
     StudentSubject ss ON su.SubjectID = ss.SubjectID
-WHERE
-    ss.Mark IS NULL;
+WHERE ss.Mark IS NULL;
     
 SELECT SubjectName
 FROM `Subject` 
@@ -67,33 +68,33 @@ SELECT SubjectName
 FROM `Subject` 
 WHERE SubjectID NOT IN (
 	SELECT b.SubjectID
-	FROM StudentSubject as a
+	FROM StudentSubject AS a
 	JOIN `Subject` AS b ON a.SubjectID = b.SubjectID);
     
 SELECT b.SubjectID
-	FROM StudentSubject as a
-	JOIN `Subject` AS b ON a.SubjectID = b.SubjectID
-    group by a.SubjectID;
+FROM StudentSubject AS a
+	JOIN 
+     `Subject` AS b 
+	ON a.SubjectID = b.SubjectID
+GROUP BY a.SubjectID;
 
-SELECT 
-    *
-FROM
-    `Subject`
-WHERE
-    SubjectID NOT IN (SELECT 
-            SubjectID
-        FROM
-            StudentSubject);
-            
-SELECT 
-            SubjectID
-        FROM
-            StudentSubject group by SubjectID ;
+SELECT *
+FROM `Subject`
+WHERE SubjectID NOT IN(
+	SELECT SubjectID
+        FROM StudentSubject);
+
+--Chat GPT
+SELECT * 
+FROM `Subject`
+WHERE SubjectID NOT IN(
+	SELECT DISTINCT SubjectID
+        FROM StudentSubject
+	WHERE Mark IS NOT NULL);
    
-
 -- b) Lấy danh sách các môn học có ít nhất 2 điểm
 SELECT 
-    su.SubjectID, su.SubjectName, COUNT(ss.SubjectID) as so_luong
+    su.SubjectID, su.SubjectName, COUNT(ss.SubjectID) AS so_luong
 FROM
     `subject` su
         JOIN
@@ -103,9 +104,9 @@ HAVING so_luong >= 2;
 
 SELECT 
 	b.SubjectName,
-    count(b.SubjectName) as 'Total' 
+    count(b.SubjectName) AS 'Total' 
 FROM
-	StudentSubject as a
+	StudentSubject AS a
 JOIN `Subject` AS b ON a.SubjectID = b.SubjectID
 GROUP By a.SubjectID
 having Total>=2;
@@ -119,7 +120,17 @@ FROM
 GROUP BY a.SubjectID
 HAVING 'Total' >= 2;
 
--- Tạo view có tên là "StudentInfo" lấy các thông tin về học sinh bao gồm:
+--Chat GPT
+SELECT 
+    a.SubjectName, a.SubjectID
+FROM
+    `Subject` a
+    	JOIN
+    StudentSubject b
+        ON a.SubjectID = b.SubjectID
+WHERE Mart >= 2
+GROUP BY a.SubjectID
+HAVING COUNT(*) >= 2;
 
 /*Tạo view có tên là "StudentInfo" lấy các thông tin về học sinh bao gồm: 
 Student ID,Subject ID, Student Name, Student Age, Student Gender, Subject Name, Mark, Date
@@ -129,14 +140,18 @@ CREATE OR REPLACE VIEW StudentInfo AS
     SELECT
     a.StudentID, c.SubjectID, a.StudentName, a.StudentAge, c.SubjectName, b.Mark, b.`Date`,
     CASE
-		WHEN a.StudentGender = '0' THEN 'Male'
-		WHEN a.StudentGender = '1' THEN 'Female'
-		ELSE 'Unknow'
-		END AS Gender
-    FROM Student a JOIN StudentSubject b USING(StudentID)
-    JOIN `Subject` c USING(SubjectID);
+        WHEN a.StudentGender = '0' THEN 'Male'
+	WHEN a.StudentGender = '1' THEN 'Female'
+	ELSE 'Unknow'
+    END AS StudentGender
+    FROM 
+    	Student a 
+	  JOIN 
+	StudentSubject b USING(StudentID)
+    	  JOIN 
+	`Subject` c USING(SubjectID);
     
-    SELECT * FROM StudentInfo;
+SELECT * FROM StudentInfo;
 
 -- Delete foreign key của bảng Employee: 'fk_2'
 ALTER TABLE StudentSubject
@@ -205,21 +220,24 @@ DELETE FROM `subject` WHERE id =1;
 Viết 1 store procedure (có 1 parameters: student name) sẽ xóa tất cả các thông tin liên quan tới học sinh có cùng tên như parameter
 Trong trường hợp nhập vào student name = "*" thì procedure sẽ xóa tất cả các học sinh
 */
-
 -- Input: student_name
-
 DROP PROCEDURE IF EXISTS sp_detete_student;
 DELIMITER $$
-CREATE PROCEDURE sp_detete_student(IN in_student_name varchar(50))
-BEGIN 
-	IF (in_student_name= '*') THEN
-    DELETE FROM Student;
-	END IF;
-    
-	DELETE FROM Student 
-	WHERE
-    StudentName = in_student_name;
-END $$
+CREATE PROCEDURE sp_detete_student(IN in_student_name VARCHAR(255))
+BEGIN
+   IF in_student_name= '*' THEN
+      DELETE FROM StudentSubject;
+      DELETE FROM Student;
+   ELSE
+      DELETE FROM StudentSubject
+      WHERE StudentID IN(
+       SELECT StudentID FROM Student 
+       WHERE StudentName = in_student_name);
+       
+      DELETE FROM Student 
+      WHERE StudentName = in_student_name;
+   END IF;
+END$$
 DELIMITER ;
 
 CALl sp_detete_student('TRUNG DUNG');
