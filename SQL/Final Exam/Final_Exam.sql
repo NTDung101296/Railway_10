@@ -168,6 +168,39 @@ DELIMITER ;
 -- END IF ;
 -- END$$
  DELIMITER ;
+ 
+  3.  Tạo trigger cho table Employee chỉ cho phép insert mỗi quốc gia có tối đa 10 employee
+DROP TRIGGER IF EXISTS Tr_beforeEmployeeInsert;
+DELIMITER $$
+CREATE TRIGGER Tr_beforeEmployeeInsert
+BEFORE INSERT ON Employee
+FOR EACH ROW
+BEGIN
+	DECLARE	V_country_id INT;
+	DECLARE	v_employeeCount INT;
+    
+    SELECT	country_id INTO V_country_id
+    FROM	Location
+    WHERE	location_id = NEW.location_id;
+        
+	WITH Cte_Employee_Raw As(
+		SELECT			E.*, C.country_id, C.country_name
+		FROM			Employee As E
+		INNER JOIN		Location As L ON E.location_id = L.location_id
+		INNER JOIN		Country As C ON	L.country_id = C.country_id
+    )
+    SELECT		COUNT(employee_id) INTO v_employeeCount		
+    FROM		Cte_Employee_Raw As C_E
+    WHERE		C_E.country_id = V_country_id;
+	
+	-- Logic 
+	IF(v_employeeCount > 3) 
+		THEN
+			SIGNAL SQLSTATE '12345' -- Disallow insert this record
+            SET MESSAGE_TEXT = 'Error : Countries with maximum 10 employees';
+	END IF;
+END
+$$ DELIMITER ;
 
 -- Thử insert
 INSERT INTO Employee(full_name,email,location_id)
