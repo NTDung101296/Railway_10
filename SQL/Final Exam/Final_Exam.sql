@@ -97,6 +97,19 @@ FROM
     Employee E USING (location_id)
 GROUP BY E.location_id;
 
+-- c)  Thống kê mỗi country, mỗi location có bao nhiêu employee đang làm việc. 
+SELECT			C.country_id As Id, C.country_name As Country_Or_Location, COUNT(E.employee_id) As Employee_Count
+FROM			Country As C
+LEFT JOIN		Location As L ON C.country_id = L.country_id
+LEFT JOIN		Employee As E ON L.location_id = E.location_id
+GROUP BY		C.country_id, C.country_name
+UNION ALL 
+SELECT			L.location_id As Id, L.street_address As Country_Or_Location, COUNT(E.employee_id) As Employee_Count
+FROM			Location As L
+LEFT JOIN		Employee As E ON L.location_id = E.location_id
+GROUP BY		L.location_id, L.street_address; 
+
+
 /*Question 3: Tạo trigger cho table Employee chỉ cho phép insert mỗi quốc gia có tối đa 
 10 employee
 */
@@ -130,8 +143,8 @@ END$$
 FOR EACH 
 DELIMITER ;
 
--- DROP TRIGGER IF EXISTS getquestion3;
--- DELIMITER $$
+ DROP TRIGGER IF EXISTS getquestion3;
+ DELIMITER $$
 -- CREATE TRIGGER getquestion3
 -- BEFORE INSERT ON Employee
 -- FOR EACH ROW
@@ -154,7 +167,7 @@ DELIMITER ;
 -- SET MESSAGE_TEXT = 'Ko the add them Employee';
 -- END IF ;
 -- END$$
--- DELIMITER ;
+ DELIMITER ;
 
 -- Thử insert
 INSERT INTO Employee(full_name,email,location_id)
